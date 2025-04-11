@@ -85,10 +85,10 @@ const Reports = () => {
         </CardContent>
       </Card>
 
-      {/* Report Content */}
-      <div className="grid grid-cols-1 gap-6">
+      {/* Report Content - Now properly using Tabs and TabsContent */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Production Reports */}
-        <TabsContent value="production" className="mt-0" hidden={activeTab !== "production"}>
+        <TabsContent value="production" className="mt-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <Card>
               <CardHeader>
@@ -171,53 +171,86 @@ const Reports = () => {
           </Card>
         </TabsContent>
 
-        {/* Saved Reports */}
-        <Card className="mt-6">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>Saved Reports</CardTitle>
-              <Button variant="ghost" size="sm">
-                <RefreshCw size={16} className="mr-2" /> Refresh
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { name: "Q1 2023 Production Summary", date: "2023-04-01", type: "Production" },
-                { name: "Monthly Inventory Status - March 2023", date: "2023-04-05", type: "Inventory" },
-                { name: "Q1 2023 Financial Report", date: "2023-04-10", type: "Financial" },
-                { name: "Employee Performance Q1 2023", date: "2023-04-12", type: "Employee" }
-              ].map((report, idx) => (
-                <div key={idx} className="flex justify-between items-center p-3 bg-gray-50/10 rounded-md hover:bg-gray-100/10">
-                  <div className="flex items-center">
-                    <FileText size={20} className="text-gray-500 mr-3" />
-                    <div>
-                      <p className="font-medium">{report.name}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="outline" className="bg-gray-100/20 text-xs">
-                          {report.type}
-                        </Badge>
-                        <span className="text-xs text-gray-500 flex items-center">
-                          <Clock size={12} className="mr-1" /> {report.date}
-                        </span>
-                      </div>
+        {/* Inventory Reports */}
+        <TabsContent value="inventory" className="mt-0">
+          <div className="flex flex-col justify-center items-center py-12">
+            <PieChart size={48} className="text-purple-500 mb-4" />
+            <h3 className="text-xl font-semibold">Inventory Reports</h3>
+            <p className="text-gray-500 mb-4 max-w-md text-center">
+              This tab would display inventory-related reports and analytics.
+            </p>
+          </div>
+        </TabsContent>
+
+        {/* Financial Reports */}
+        <TabsContent value="financial" className="mt-0">
+          <div className="flex flex-col justify-center items-center py-12">
+            <LineChart size={48} className="text-yellow-500 mb-4" />
+            <h3 className="text-xl font-semibold">Financial Reports</h3>
+            <p className="text-gray-500 mb-4 max-w-md text-center">
+              This tab would display financial-related reports and analytics.
+            </p>
+          </div>
+        </TabsContent>
+
+        {/* Employee Reports */}
+        <TabsContent value="employee" className="mt-0">
+          <div className="flex flex-col justify-center items-center py-12">
+            <BarChart3 size={48} className="text-cyan-500 mb-4" />
+            <h3 className="text-xl font-semibold">Employee Reports</h3>
+            <p className="text-gray-500 mb-4 max-w-md text-center">
+              This tab would display employee-related reports and analytics.
+            </p>
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* Saved Reports */}
+      <Card className="mt-6">
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <CardTitle>Saved Reports</CardTitle>
+            <Button variant="ghost" size="sm">
+              <RefreshCw size={16} className="mr-2" /> Refresh
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {[
+              { name: "Q1 2023 Production Summary", date: "2023-04-01", type: "Production" },
+              { name: "Monthly Inventory Status - March 2023", date: "2023-04-05", type: "Inventory" },
+              { name: "Q1 2023 Financial Report", date: "2023-04-10", type: "Financial" },
+              { name: "Employee Performance Q1 2023", date: "2023-04-12", type: "Employee" }
+            ].map((report, idx) => (
+              <div key={idx} className="flex justify-between items-center p-3 bg-gray-50/10 rounded-md hover:bg-gray-100/10">
+                <div className="flex items-center">
+                  <FileText size={20} className="text-gray-500 mr-3" />
+                  <div>
+                    <p className="font-medium">{report.name}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge variant="outline" className="bg-gray-100/20 text-xs">
+                        {report.type}
+                      </Badge>
+                      <span className="text-xs text-gray-500 flex items-center">
+                        <Clock size={12} className="mr-1" /> {report.date}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="sm">
-                      <Share2 size={16} />
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      <ArrowDownCircle size={16} />
-                    </Button>
-                  </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="sm">
+                    <Share2 size={16} />
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    <ArrowDownCircle size={16} />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </Layout>
   );
 };
