@@ -102,7 +102,6 @@ const Production = () => {
                   <Progress 
                     value={line.produced / line.target * 100} 
                     className={`h-2 ${line.status !== "Running" ? "bg-gray-200" : ""}`}
-                    indicatorClassName={line.status === "Running" ? "bg-flow-blue" : "bg-gray-400"}
                   />
                 </div>
               </div>
@@ -176,11 +175,6 @@ const Production = () => {
                         <Progress 
                           value={machine.efficiency} 
                           className="w-20 h-2" 
-                          indicatorClassName={
-                            machine.efficiency > 85 ? "bg-green-500" : 
-                            machine.efficiency > 70 ? "bg-amber-500" : 
-                            "bg-red-500"
-                          }
                         />
                         <span className="text-sm">{machine.efficiency}%</span>
                       </div>
