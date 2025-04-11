@@ -40,7 +40,7 @@ const Reports = () => {
       </div>
       
       {/* Report Controls */}
-      <Card className="mb-6 glass-card">
+      <Card className="mb-6">
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
             <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
@@ -90,7 +90,7 @@ const Reports = () => {
         {/* Production Reports */}
         <TabsContent value="production" className="mt-0" hidden={activeTab !== "production"}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <Card className="glass-card">
+            <Card>
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div>
@@ -118,7 +118,7 @@ const Reports = () => {
               </CardContent>
             </Card>
 
-            <Card className="glass-card">
+            <Card>
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div>
@@ -137,7 +137,7 @@ const Reports = () => {
               </CardHeader>
               <CardContent>
                 <div className="h-64 flex flex-col justify-center items-center">
-                  <PieChart size={48} className="text-flow-blue mb-4" />
+                  <PieChart size={48} className="text-blue-500 mb-4" />
                   <h3 className="text-xl font-semibold">Department Distribution</h3>
                   <p className="text-gray-500 mb-4 max-w-md text-center">
                     This area would display a pie chart showing the distribution of production across departments.
@@ -147,7 +147,7 @@ const Reports = () => {
             </Card>
           </div>
 
-          <Card className="glass-card">
+          <Card>
             <CardHeader>
               <div className="flex justify-between items-center">
                 <div>
@@ -172,7 +172,7 @@ const Reports = () => {
         </TabsContent>
 
         {/* Saved Reports */}
-        <Card className="glass-card mt-6">
+        <Card className="mt-6">
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle>Saved Reports</CardTitle>

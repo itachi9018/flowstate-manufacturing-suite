@@ -10,7 +10,6 @@ import {
   Shield,
   Globe,
   Database,
-  HardDrive,
   Mail,
   LifeBuoy,
   Palette,
@@ -43,7 +42,7 @@ const Settings = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Settings Navigation */}
-        <Card className="glass-card md:col-span-3">
+        <Card className="md:col-span-3">
           <CardContent className="p-4">
             <Tabs 
               value={activeTab} 
@@ -103,7 +102,7 @@ const Settings = () => {
         <div className="md:col-span-9">
           {/* General Settings */}
           <TabsContent value="general" className="mt-0" hidden={activeTab !== "general"}>
-            <Card className="glass-card">
+            <Card>
               <CardHeader>
                 <CardTitle>General Settings</CardTitle>
                 <CardDescription>Configure system-wide settings for FlowState ERP</CardDescription>
@@ -168,43 +167,6 @@ const Settings = () => {
                   <p className="text-sm text-gray-500 mt-2">Changes the language across the entire system</p>
                 </div>
 
-                <Separator />
-
-                <div>
-                  <h3 className="font-medium mb-2">Date & Time Format</h3>
-                  <div className="flex flex-col space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Date Format</span>
-                      <div className="relative">
-                        <select className="p-1 border border-gray-300 rounded-md bg-transparent appearance-none pr-8">
-                          <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                          <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                          <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                        </select>
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Time Format</span>
-                      <div className="relative">
-                        <select className="p-1 border border-gray-300 rounded-md bg-transparent appearance-none pr-8">
-                          <option value="12">12-hour (AM/PM)</option>
-                          <option value="24">24-hour</option>
-                        </select>
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                          <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="flex justify-end pt-4">
                   <Button>Save Settings</Button>
                 </div>
@@ -214,7 +176,7 @@ const Settings = () => {
 
           {/* Appearance Settings */}
           <TabsContent value="appearance" className="mt-0" hidden={activeTab !== "appearance"}>
-            <Card className="glass-card">
+            <Card>
               <CardHeader>
                 <CardTitle>Appearance Settings</CardTitle>
                 <CardDescription>Customize the look and feel of the FlowState interface</CardDescription>
@@ -224,85 +186,27 @@ const Settings = () => {
                   <h3 className="font-medium mb-3">Theme Mode</h3>
                   <div className="flex items-center gap-8">
                     <div 
-                      className={`flex flex-col items-center gap-2 cursor-pointer p-4 rounded-lg ${!isDarkMode ? 'ring-2 ring-flow-blue' : ''}`}
+                      className={`flex flex-col items-center gap-2 cursor-pointer p-4 rounded-lg ${!isDarkMode ? 'ring-2 ring-blue-500' : ''}`}
                       onClick={() => setIsDarkMode(false)}
                     >
                       <div className="h-16 w-16 rounded-full bg-white flex items-center justify-center shadow-md">
                         <Sun size={32} className="text-amber-500" />
                       </div>
                       <span className="text-sm font-medium">Light Mode</span>
-                      {!isDarkMode && <Check size={16} className="text-flow-blue" />}
+                      {!isDarkMode && <Check size={16} className="text-blue-500" />}
                     </div>
                     
                     <div 
-                      className={`flex flex-col items-center gap-2 cursor-pointer p-4 rounded-lg ${isDarkMode ? 'ring-2 ring-flow-blue' : ''}`}
+                      className={`flex flex-col items-center gap-2 cursor-pointer p-4 rounded-lg ${isDarkMode ? 'ring-2 ring-blue-500' : ''}`}
                       onClick={() => setIsDarkMode(true)}
                     >
                       <div className="h-16 w-16 rounded-full bg-gray-800 flex items-center justify-center shadow-md">
                         <Moon size={32} className="text-indigo-300" />
                       </div>
                       <span className="text-sm font-medium">Dark Mode</span>
-                      {isDarkMode && <Check size={16} className="text-flow-blue" />}
+                      {isDarkMode && <Check size={16} className="text-blue-500" />}
                     </div>
                   </div>
-                </div>
-
-                <Separator />
-
-                <div>
-                  <h3 className="font-medium mb-3">Accent Color</h3>
-                  <RadioGroup defaultValue="purple" className="grid grid-cols-5 gap-4">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="flex items-center justify-center">
-                        <RadioGroupItem value="purple" id="purple" className="sr-only" />
-                        <Label
-                          htmlFor="purple"
-                          className="h-10 w-10 rounded-full bg-purple-500 cursor-pointer ring-offset-2 ring-offset-background ring-2 ring-transparent data-[state=checked]:ring-purple-500"
-                        />
-                      </div>
-                      <span className="text-xs">Purple</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="flex items-center justify-center">
-                        <RadioGroupItem value="blue" id="blue" className="sr-only" />
-                        <Label
-                          htmlFor="blue"
-                          className="h-10 w-10 rounded-full bg-blue-500 cursor-pointer ring-offset-2 ring-offset-background ring-2 ring-transparent data-[state=checked]:ring-blue-500"
-                        />
-                      </div>
-                      <span className="text-xs">Blue</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="flex items-center justify-center">
-                        <RadioGroupItem value="green" id="green" className="sr-only" />
-                        <Label
-                          htmlFor="green"
-                          className="h-10 w-10 rounded-full bg-green-500 cursor-pointer ring-offset-2 ring-offset-background ring-2 ring-transparent data-[state=checked]:ring-green-500"
-                        />
-                      </div>
-                      <span className="text-xs">Green</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="flex items-center justify-center">
-                        <RadioGroupItem value="amber" id="amber" className="sr-only" />
-                        <Label
-                          htmlFor="amber"
-                          className="h-10 w-10 rounded-full bg-amber-500 cursor-pointer ring-offset-2 ring-offset-background ring-2 ring-transparent data-[state=checked]:ring-amber-500"
-                        />
-                      </div>
-                      <span className="text-xs">Amber</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="flex items-center justify-center">
-                        <RadioGroupItem value="red" id="red" className="sr-only" />
-                        <Label
-                          htmlFor="red"
-                          className="h-10 w-10 rounded-full bg-red-500 cursor-pointer ring-offset-2 ring-offset-background ring-2 ring-transparent data-[state=checked]:ring-red-500"
-                        />
-                      </div>
-                      <span className="text-xs">Red</span>
-                    </div>
-                  </RadioGroup>
                 </div>
 
                 <Separator />
@@ -344,7 +248,7 @@ const Settings = () => {
 
           {/* Notifications Settings */}
           <TabsContent value="notifications" className="mt-0" hidden={activeTab !== "notifications"}>
-            <Card className="glass-card">
+            <Card>
               <CardHeader>
                 <CardTitle>Notification Settings</CardTitle>
                 <CardDescription>Configure how you receive alerts and notifications</CardDescription>
@@ -408,7 +312,7 @@ const Settings = () => {
 
           {/* Data & Storage */}
           <TabsContent value="data" className="mt-0" hidden={activeTab !== "data"}>
-            <Card className="glass-card">
+            <Card>
               <CardHeader>
                 <CardTitle>Data & Storage Settings</CardTitle>
                 <CardDescription>Configure database backups and data management</CardDescription>
@@ -450,7 +354,7 @@ const Settings = () => {
                       <span className="text-sm">12.8 GB of 50 GB</span>
                     </div>
                     <div className="h-2 bg-gray-200 rounded-full">
-                      <div className="h-2 bg-flow-blue rounded-full" style={{ width: "25%" }}></div>
+                      <div className="h-2 bg-blue-500 rounded-full" style={{ width: "25%" }}></div>
                     </div>
                     <div className="flex justify-between mt-4 text-xs text-gray-500">
                       <span>25% used</span>
@@ -482,50 +386,6 @@ const Settings = () => {
                   </div>
                 </div>
 
-                <Separator />
-
-                <div className="space-y-4">
-                  <h3 className="font-medium">Data Retention</h3>
-                  
-                  <div>
-                    <Label htmlFor="retain-production">Production Records</Label>
-                    <div className="relative mt-1">
-                      <select id="retain-production" className="w-full p-2 border border-gray-300 rounded-md bg-transparent appearance-none pr-10">
-                        <option value="1">1 Year</option>
-                        <option value="2">2 Years</option>
-                        <option value="5" selected>5 Years</option>
-                        <option value="7">7 Years</option>
-                        <option value="10">10 Years</option>
-                        <option value="forever">Indefinitely</option>
-                      </select>
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="retain-financial">Financial Records</Label>
-                    <div className="relative mt-1">
-                      <select id="retain-financial" className="w-full p-2 border border-gray-300 rounded-md bg-transparent appearance-none pr-10">
-                        <option value="1">1 Year</option>
-                        <option value="2">2 Years</option>
-                        <option value="5">5 Years</option>
-                        <option value="7" selected>7 Years</option>
-                        <option value="10">10 Years</option>
-                        <option value="forever">Indefinitely</option>
-                      </select>
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="flex justify-between pt-4">
                   <Button variant="outline">Manual Backup</Button>
                   <Button>Save Storage Settings</Button>
@@ -536,15 +396,15 @@ const Settings = () => {
 
           {/* Placeholder for other tabs */}
           {["account", "security", "help"].includes(activeTab) && (
-            <Card className="glass-card">
+            <Card>
               <CardHeader>
                 <CardTitle>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Settings</CardTitle>
                 <CardDescription>Configure your {activeTab} settings</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col justify-center items-center py-12">
-                {activeTab === "account" && <User size={48} className="text-flow-blue mb-4" />}
-                {activeTab === "security" && <Shield size={48} className="text-flow-blue mb-4" />}
-                {activeTab === "help" && <LifeBuoy size={48} className="text-flow-blue mb-4" />}
+                {activeTab === "account" && <User size={48} className="text-blue-500 mb-4" />}
+                {activeTab === "security" && <Shield size={48} className="text-blue-500 mb-4" />}
+                {activeTab === "help" && <LifeBuoy size={48} className="text-blue-500 mb-4" />}
                 <h3 className="text-xl font-semibold mb-2">{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Settings</h3>
                 <p className="text-gray-500 max-w-md text-center mb-6">
                   This section would contain detailed {activeTab} configurations and options.
