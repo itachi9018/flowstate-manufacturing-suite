@@ -20,7 +20,7 @@ export function StatusCard({ title, status, progressValue, description, classNam
         <p className="text-sm text-gray-300 mt-1">{status}</p>
         
         <div className="mt-4">
-          <Progress value={progressValue} className="h-2 bg-white/10" indicatorClassName="bg-flow-blue" />
+          <Progress value={progressValue} className="h-2 bg-white/10" />
         </div>
         
         <p className="text-sm text-gray-300 mt-3">{description}</p>
