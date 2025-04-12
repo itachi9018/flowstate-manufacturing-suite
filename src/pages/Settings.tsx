@@ -25,11 +25,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
 const Settings = () => {
-  const [activeTab, setActiveTab] = useState("general");
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [appNotifications, setAppNotifications] = useState(true);
   const [backupFrequency, setBackupFrequency] = useState("daily");
+  const [activeTab, setActiveTab] = useState("general");
   
   return (
     <Layout>
@@ -44,57 +44,59 @@ const Settings = () => {
         {/* Settings Navigation */}
         <Card className="md:col-span-3">
           <CardContent className="p-4">
-            <TabsList className="flex flex-col items-stretch h-auto bg-transparent space-y-1">
-              <TabsTrigger 
-                value="general" 
-                className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
-                onClick={() => setActiveTab("general")}
-              >
-                <Globe size={16} className="mr-2" /> General
-              </TabsTrigger>
-              <TabsTrigger 
-                value="appearance" 
-                className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
-                onClick={() => setActiveTab("appearance")}
-              >
-                <Palette size={16} className="mr-2" /> Appearance
-              </TabsTrigger>
-              <TabsTrigger 
-                value="account" 
-                className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
-                onClick={() => setActiveTab("account")}
-              >
-                <User size={16} className="mr-2" /> Account
-              </TabsTrigger>
-              <TabsTrigger 
-                value="notifications" 
-                className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
-                onClick={() => setActiveTab("notifications")}
-              >
-                <Bell size={16} className="mr-2" /> Notifications
-              </TabsTrigger>
-              <TabsTrigger 
-                value="security" 
-                className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
-                onClick={() => setActiveTab("security")}
-              >
-                <Shield size={16} className="mr-2" /> Security
-              </TabsTrigger>
-              <TabsTrigger 
-                value="data" 
-                className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
-                onClick={() => setActiveTab("data")}
-              >
-                <Database size={16} className="mr-2" /> Data & Storage
-              </TabsTrigger>
-              <TabsTrigger 
-                value="help" 
-                className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
-                onClick={() => setActiveTab("help")}
-              >
-                <LifeBuoy size={16} className="mr-2" /> Help & Support
-              </TabsTrigger>
-            </TabsList>
+            <Tabs value={activeTab}>
+              <TabsList className="flex flex-col items-stretch h-auto bg-transparent space-y-1">
+                <TabsTrigger 
+                  value="general" 
+                  className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
+                  onClick={() => setActiveTab("general")}
+                >
+                  <Globe size={16} className="mr-2" /> General
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="appearance" 
+                  className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
+                  onClick={() => setActiveTab("appearance")}
+                >
+                  <Palette size={16} className="mr-2" /> Appearance
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="account" 
+                  className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
+                  onClick={() => setActiveTab("account")}
+                >
+                  <User size={16} className="mr-2" /> Account
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="notifications" 
+                  className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
+                  onClick={() => setActiveTab("notifications")}
+                >
+                  <Bell size={16} className="mr-2" /> Notifications
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="security" 
+                  className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
+                  onClick={() => setActiveTab("security")}
+                >
+                  <Shield size={16} className="mr-2" /> Security
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="data" 
+                  className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
+                  onClick={() => setActiveTab("data")}
+                >
+                  <Database size={16} className="mr-2" /> Data & Storage
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="help" 
+                  className="justify-start text-left px-4 py-3 data-[state=active]:bg-white/10"
+                  onClick={() => setActiveTab("help")}
+                >
+                  <LifeBuoy size={16} className="mr-2" /> Help & Support
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </CardContent>
         </Card>
 
