@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,11 +7,47 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatCard } from "@/components/StatCard";
-import { Package, Search, Filter, Download, Plus, ArrowUpDown, MoreHorizontal, RefreshCw, Package2, Truck } from "lucide-react";
+import { 
+  Package, 
+  Search, 
+  Filter, 
+  Download, 
+  Plus, 
+  ArrowUpDown, 
+  MoreHorizontal, 
+  RefreshCw, 
+  Package2, 
+  Truck,
+  Save,
+  X
+} from "lucide-react";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle,
+  DialogClose
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 const Inventory = () => {
+  // State for dialog and form
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [newItem, setNewItem] = useState({
+    name: "",
+    category: "Raw Materials",
+    quantity: 0,
+    value: ""
+  });
+  
+  const { toast } = useToast();
+
   // Sample inventory data
-  const inventoryItems = [
+  const [inventoryItems, setInventoryItems] = useState([
     { id: "INV001", name: "Steel Pipes", category: "Raw Materials", quantity: 1250, status: "In Stock", value: "$12,500" },
     { id: "INV002", name: "Aluminum Sheets", category: "Raw Materials", quantity: 320, status: "Low Stock", value: "$6,400" },
     { id: "INV003", name: "Hydraulic Pumps", category: "Components", quantity: 75, status: "In Stock", value: "$22,500" },
@@ -19,7 +56,54 @@ const Inventory = () => {
     { id: "INV006", name: "Control Panels", category: "Finished Goods", quantity: 35, status: "In Stock", value: "$17,500" },
     { id: "INV007", name: "Power Supply Units", category: "Components", quantity: 15, status: "Low Stock", value: "$4,500" },
     { id: "INV008", name: "Assembly Kits", category: "Finished Goods", quantity: 28, status: "In Stock", value: "$14,000" },
-  ];
+  ]);
+
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewItem({
+      ...newItem,
+      [name]: name === 'quantity' ? parseInt(value) || 0 : value
+    });
+  };
+
+  // Handle category selection
+  const handleCategoryChange = (value: string) => {
+    setNewItem({
+      ...newItem,
+      category: value
+    });
+  };
+
+  // Add new inventory item
+  const handleAddItem = () => {
+    // Generate a new ID
+    const newId = `INV${String(inventoryItems.length + 1).padStart(3, '0')}`;
+    
+    // Create the new item
+    const itemToAdd = {
+      id: newId,
+      name: newItem.name,
+      category: newItem.category,
+      quantity: newItem.quantity,
+      status: newItem.quantity < 50 ? "Low Stock" : "In Stock",
+      value: newItem.value.startsWith('$') ? newItem.value : `$${newItem.value}`
+    };
+    
+    // Update inventory
+    setInventoryItems([...inventoryItems, itemToAdd]);
+    
+    // Reset form and close dialog
+    setNewItem({ name: "", category: "Raw Materials", quantity: 0, value: "" });
+    setIsAddDialogOpen(false);
+    
+    // Show success notification
+    toast({
+      title: "Item Added",
+      description: `${itemToAdd.name} has been added to inventory.`,
+      duration: 3000,
+    });
+  };
 
   return (
     <Layout>
@@ -29,7 +113,7 @@ const Inventory = () => {
           <Button variant="outline" size="sm">
             <RefreshCw size={16} className="mr-2" /> Refresh
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setIsAddDialogOpen(true)}>
             <Plus size={16} className="mr-2" /> Add Item
           </Button>
         </div>
@@ -143,6 +227,93 @@ const Inventory = () => {
           </TabsContent>
         </Tabs>
       </Card>
+
+      {/* Add Item Dialog */}
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Add New Inventory Item</DialogTitle>
+            <DialogDescription>
+              Enter the details of the new inventory item below.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="item-name" className="text-right">
+                Item Name
+              </Label>
+              <Input
+                id="item-name"
+                name="name"
+                value={newItem.name}
+                onChange={handleInputChange}
+                className="col-span-3"
+                placeholder="Enter item name"
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="item-category" className="text-right">
+                Category
+              </Label>
+              <Select 
+                value={newItem.category} 
+                onValueChange={handleCategoryChange}
+              >
+                <SelectTrigger className="col-span-3" id="item-category">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Raw Materials">Raw Materials</SelectItem>
+                  <SelectItem value="Components">Components</SelectItem>
+                  <SelectItem value="Finished Goods">Finished Goods</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="item-quantity" className="text-right">
+                Quantity
+              </Label>
+              <Input
+                id="item-quantity"
+                name="quantity"
+                type="number"
+                value={newItem.quantity}
+                onChange={handleInputChange}
+                className="col-span-3"
+                min={0}
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="item-value" className="text-right">
+                Value
+              </Label>
+              <Input
+                id="item-value"
+                name="value"
+                value={newItem.value}
+                onChange={handleInputChange}
+                className="col-span-3"
+                placeholder="$0.00"
+              />
+            </div>
+          </div>
+          
+          <DialogFooter className="flex justify-between items-center">
+            <DialogClose asChild>
+              <Button variant="outline" type="button">
+                <X size={16} className="mr-2" /> Cancel
+              </Button>
+            </DialogClose>
+            <Button onClick={handleAddItem}>
+              <Save size={16} className="mr-2" /> Add Item
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
