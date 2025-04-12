@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -20,6 +19,12 @@ import { StatCard } from "@/components/StatCard";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 
 // Mock financial data
 const transactions = [
@@ -84,6 +89,17 @@ const budgetItems = [
 
 const Finance = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
+  
+  const form = useForm({
+    defaultValues: {
+      description: "",
+      amount: "",
+      category: "Sales",
+      account: "Operations Account"
+    }
+  });
 
   // Calculate financial statistics
   const totalRevenue = transactions
@@ -96,11 +112,37 @@ const Finance = () => {
 
   const netCashFlow = totalRevenue - totalExpenses;
 
+  const handleNewTransaction = () => {
+    setDialogOpen(true);
+  };
+
+  const onSubmit = (data: any) => {
+    console.log("New transaction:", data);
+
+    const newTransaction = {
+      id: `TRX-${Math.floor(Math.random() * 1000)}`,
+      description: data.description,
+      date: new Date().toISOString().slice(0, 10),
+      amount: parseFloat(data.amount),
+      category: data.category,
+      account: data.account
+    };
+
+    console.log("Added new transaction:", newTransaction);
+
+    setDialogOpen(false);
+    form.reset();
+    toast({
+      title: "Transaction created",
+      description: `${data.description} for ${parseFloat(data.amount) >= 0 ? '+' : ''}$${data.amount}`,
+    });
+  };
+
   return (
     <Layout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Financial Management</h1>
-        <Button>
+        <Button onClick={handleNewTransaction}>
           <CreditCard className="mr-2" size={16} /> New Transaction
         </Button>
       </div>
@@ -144,7 +186,6 @@ const Finance = () => {
         {/* Overview Tab */}
         <TabsContent value="overview">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Cash Flow Card */}
             <Card className="glass-card col-span-1 lg:col-span-2">
               <CardHeader>
                 <CardTitle>Cash Flow</CardTitle>
@@ -161,7 +202,6 @@ const Finance = () => {
               </CardContent>
             </Card>
             
-            {/* Monthly Summary */}
             <Card className="glass-card">
               <CardHeader>
                 <CardTitle>Monthly Summary</CardTitle>
@@ -324,6 +364,105 @@ const Finance = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* New Transaction Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add New Transaction</DialogTitle>
+            <DialogDescription>
+              Create a new financial transaction. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Transaction description" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Amount (use negative for expenses)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.01" placeholder="0.00" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Sales">Sales</SelectItem>
+                        <SelectItem value="Inventory">Inventory</SelectItem>
+                        <SelectItem value="Payroll">Payroll</SelectItem>
+                        <SelectItem value="Maintenance">Maintenance</SelectItem>
+                        <SelectItem value="Utilities">Utilities</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="account"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Account</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select account" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Operations Account">Operations Account</SelectItem>
+                        <SelectItem value="Sales Account">Sales Account</SelectItem>
+                        <SelectItem value="Payroll Account">Payroll Account</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <DialogFooter>
+                <Button variant="outline" type="button" onClick={() => setDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Save Transaction</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };

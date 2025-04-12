@@ -20,14 +20,45 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("production");
   const [timeframe, setTimeframe] = useState("month");
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const { toast } = useToast();
+
+  const form = useForm({
+    defaultValues: {
+      reportName: "",
+      includeCharts: true,
+      includeTables: true,
+      format: "pdf"
+    }
+  });
 
   const handleGenerateReport = () => {
-    // This would normally handle report generation
-    console.log("Generating report for:", activeTab, "with timeframe:", timeframe);
+    setReportDialogOpen(true);
+  };
+
+  const onSubmit = (data: any) => {
+    // In a real app, this would generate a report
+    console.log("Generating report with options:", data);
+    console.log("Report type:", activeTab);
+    console.log("Timeframe:", timeframe);
+    
+    // Close dialog and show success message
+    setReportDialogOpen(false);
+    form.reset();
+    toast({
+      title: "Report generated",
+      description: `${data.reportName || 'Report'} has been generated successfully.`,
+    });
   };
 
   return (
@@ -85,7 +116,7 @@ const Reports = () => {
         </CardContent>
       </Card>
 
-      {/* Report Content - Now properly using Tabs and TabsContent */}
+      {/* Report Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Production Reports */}
         <TabsContent value="production" className="mt-0">
@@ -251,6 +282,111 @@ const Reports = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Generate Report Dialog */}
+      <Dialog open={reportDialogOpen} onOpenChange={setReportDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Generate Report</DialogTitle>
+            <DialogDescription>
+              Configure your report options. The report will be generated based on your current view settings.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid gap-4">
+                <div className="grid grid-cols-1 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="reportName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Report Name</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder={`${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Report - ${new Date().toLocaleDateString()}`}
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="includeCharts"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox 
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>Include Charts</FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="includeTables"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox 
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>Include Tables</FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="format"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Output Format</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select format" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="pdf">PDF Document</SelectItem>
+                          <SelectItem value="excel">Excel Spreadsheet</SelectItem>
+                          <SelectItem value="csv">CSV File</SelectItem>
+                          <SelectItem value="json">JSON Data</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <DialogFooter>
+                <Button variant="outline" type="button" onClick={() => setReportDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Generate</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
