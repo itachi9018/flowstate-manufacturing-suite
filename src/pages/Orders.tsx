@@ -16,6 +16,18 @@ import {
 import { StatCard } from "@/components/StatCard";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Mock order data
 const orders = [
@@ -70,6 +82,11 @@ const OrderStatusBadge = ({ status }: { status: string }) => {
 
 const Orders = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [newOrderOpen, setNewOrderOpen] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [orderTotal, setOrderTotal] = useState("");
+  const [orderStatus, setOrderStatus] = useState("processing");
+  const { toast } = useToast();
   
   // Filter orders based on search query
   const filteredOrders = orders.filter(
@@ -83,14 +100,108 @@ const Orders = () => {
   const completedOrders = orders.filter(order => order.status === "completed").length;
   const processingOrders = orders.filter(order => order.status === "processing").length;
   const cancelledOrders = orders.filter(order => order.status === "cancelled").length;
+  
+  const handleAddOrder = () => {
+    // Generate a new order ID (in a real app, this would be handled by the backend)
+    const newOrderId = `ORD-${Math.floor(7836 + Math.random() * 100)}`;
+    
+    // Create new order object
+    const newOrder = {
+      id: newOrderId,
+      customer: customerName,
+      date: new Date().toISOString().split('T')[0], // Today's date
+      total: parseFloat(orderTotal),
+      status: orderStatus
+    };
+    
+    // In a real app, this would be an API call
+    // For now, we'll just log it
+    console.log("New order created:", newOrder);
+    
+    // Reset form fields
+    setCustomerName("");
+    setOrderTotal("");
+    setOrderStatus("processing");
+    
+    // Close dialog
+    setNewOrderOpen(false);
+    
+    // Show success toast
+    toast({
+      title: "Order Created",
+      description: `New order ${newOrderId} has been created successfully.`,
+    });
+  };
 
   return (
     <Layout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Order Processing</h1>
-        <Button>
-          <ShoppingCart className="mr-2" size={16} /> New Order
-        </Button>
+        <Dialog open={newOrderOpen} onOpenChange={setNewOrderOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <ShoppingCart className="mr-2" size={16} /> New Order
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New Order</DialogTitle>
+              <DialogDescription>
+                Enter the details for the new customer order.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="customer" className="text-right">
+                  Customer
+                </Label>
+                <Input
+                  id="customer"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="total" className="text-right">
+                  Total ($)
+                </Label>
+                <Input
+                  id="total"
+                  type="number"
+                  value={orderTotal}
+                  onChange={(e) => setOrderTotal(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="status" className="text-right">
+                  Status
+                </Label>
+                <Select
+                  value={orderStatus}
+                  onValueChange={setOrderStatus}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="processing">Processing</SelectItem>
+                    <SelectItem value="shipped">Shipped</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setNewOrderOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddOrder}>Create Order</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
       
       {/* Order Statistics */}

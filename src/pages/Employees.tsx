@@ -27,6 +27,18 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Mock employee data
 const employees = [
@@ -115,6 +127,13 @@ const EmployeeStatusBadge = ({ status }: { status: string }) => {
 
 const Employees = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [newEmployeeOpen, setNewEmployeeOpen] = useState(false);
+  const [employeeName, setEmployeeName] = useState("");
+  const [employeeEmail, setEmployeeEmail] = useState("");
+  const [employeePosition, setEmployeePosition] = useState("");
+  const [employeeDepartment, setEmployeeDepartment] = useState("Operations");
+  const [employeeStatus, setEmployeeStatus] = useState("active");
+  const { toast } = useToast();
   
   // Filter employees based on search query
   const filteredEmployees = employees.filter(
@@ -129,14 +148,152 @@ const Employees = () => {
   const activeEmployees = employees.filter(emp => emp.status === "active").length;
   const onLeaveEmployees = employees.filter(emp => emp.status === "on-leave").length;
   const inactiveEmployees = employees.filter(emp => emp.status === "inactive").length;
+  
+  const handleAddEmployee = () => {
+    // Generate a new employee ID (in a real app, this would be handled by the backend)
+    const newEmployeeId = `EMP-${Math.floor(100 + Math.random() * 900)}`;
+    
+    // Get initials from name for avatar
+    const initials = employeeName
+      .split(' ')
+      .map(name => name.charAt(0))
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
+    
+    // Create new employee object
+    const newEmployee = {
+      id: newEmployeeId,
+      name: employeeName,
+      position: employeePosition,
+      department: employeeDepartment,
+      joinDate: new Date().toISOString().split('T')[0], // Today's date
+      status: employeeStatus,
+      email: employeeEmail,
+      phone: "+1 (555) 000-0000", // Default phone number
+      avatar: initials
+    };
+    
+    // In a real app, this would be an API call
+    // For now, we'll just log it
+    console.log("New employee created:", newEmployee);
+    
+    // Reset form fields
+    setEmployeeName("");
+    setEmployeeEmail("");
+    setEmployeePosition("");
+    setEmployeeDepartment("Operations");
+    setEmployeeStatus("active");
+    
+    // Close dialog
+    setNewEmployeeOpen(false);
+    
+    // Show success toast
+    toast({
+      title: "Employee Added",
+      description: `${employeeName} has been added successfully.`,
+    });
+  };
 
   return (
     <Layout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Employee Management</h1>
-        <Button>
-          <UserPlus className="mr-2" size={16} /> Add Employee
-        </Button>
+        <Dialog open={newEmployeeOpen} onOpenChange={setNewEmployeeOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <UserPlus className="mr-2" size={16} /> Add Employee
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Employee</DialogTitle>
+              <DialogDescription>
+                Enter the details for the new employee.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Full Name
+                </Label>
+                <Input
+                  id="name"
+                  value={employeeName}
+                  onChange={(e) => setEmployeeName(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={employeeEmail}
+                  onChange={(e) => setEmployeeEmail(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="position" className="text-right">
+                  Position
+                </Label>
+                <Input
+                  id="position"
+                  value={employeePosition}
+                  onChange={(e) => setEmployeePosition(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="department" className="text-right">
+                  Department
+                </Label>
+                <Select
+                  value={employeeDepartment}
+                  onValueChange={setEmployeeDepartment}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Operations">Operations</SelectItem>
+                    <SelectItem value="Production">Production</SelectItem>
+                    <SelectItem value="Quality Assurance">Quality Assurance</SelectItem>
+                    <SelectItem value="Logistics">Logistics</SelectItem>
+                    <SelectItem value="Maintenance">Maintenance</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="status" className="text-right">
+                  Status
+                </Label>
+                <Select
+                  value={employeeStatus}
+                  onValueChange={setEmployeeStatus}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="on-leave">On Leave</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setNewEmployeeOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddEmployee}>Add Employee</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
       
       {/* Employee Statistics */}
