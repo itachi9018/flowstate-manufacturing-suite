@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -26,6 +25,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("production");
@@ -47,12 +47,10 @@ const Reports = () => {
   };
 
   const onSubmit = (data: any) => {
-    // In a real app, this would generate a report
     console.log("Generating report with options:", data);
     console.log("Report type:", activeTab);
     console.log("Timeframe:", timeframe);
     
-    // Close dialog and show success message
     setReportDialogOpen(false);
     form.reset();
     toast({
@@ -70,7 +68,6 @@ const Reports = () => {
         </Button>
       </div>
       
-      {/* Report Controls */}
       <Card className="mb-6">
         <CardContent className="pt-6">
           <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
@@ -116,9 +113,7 @@ const Reports = () => {
         </CardContent>
       </Card>
 
-      {/* Report Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        {/* Production Reports */}
         <TabsContent value="production" className="mt-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <Card>
@@ -202,7 +197,6 @@ const Reports = () => {
           </Card>
         </TabsContent>
 
-        {/* Inventory Reports */}
         <TabsContent value="inventory" className="mt-0">
           <div className="flex flex-col justify-center items-center py-12">
             <PieChart size={48} className="text-purple-500 mb-4" />
@@ -213,7 +207,6 @@ const Reports = () => {
           </div>
         </TabsContent>
 
-        {/* Financial Reports */}
         <TabsContent value="financial" className="mt-0">
           <div className="flex flex-col justify-center items-center py-12">
             <LineChart size={48} className="text-yellow-500 mb-4" />
@@ -224,7 +217,6 @@ const Reports = () => {
           </div>
         </TabsContent>
 
-        {/* Employee Reports */}
         <TabsContent value="employee" className="mt-0">
           <div className="flex flex-col justify-center items-center py-12">
             <BarChart3 size={48} className="text-cyan-500 mb-4" />
@@ -236,7 +228,6 @@ const Reports = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Saved Reports */}
       <Card className="mt-6">
         <CardHeader>
           <div className="flex justify-between items-center">
@@ -283,7 +274,6 @@ const Reports = () => {
         </CardContent>
       </Card>
 
-      {/* Generate Report Dialog */}
       <Dialog open={reportDialogOpen} onOpenChange={setReportDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
