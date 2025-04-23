@@ -26,6 +26,21 @@ import { useForm } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import {
+  BarChart,
+  Bar,
+  PieChart as ReChartsPie,
+  Pie,
+  LineChart as ReChartsLine,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { productionData, departmentData, productionMetrics, inventoryData, financialData, employeeData } from "@/data/mockReportData";
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("production");
@@ -134,12 +149,18 @@ const Reports = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="h-64 flex flex-col justify-center items-center">
-                  <BarChart3 size={48} className="text-amber-500 mb-4" />
-                  <h3 className="text-xl font-semibold">Efficiency Chart</h3>
-                  <p className="text-gray-500 mb-4 max-w-md text-center">
-                    This area would display a bar chart comparing production output against capacity.
-                  </p>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={productionData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="output" fill="#8884d8" name="Output" />
+                      <Bar dataKey="capacity" fill="#82ca9d" name="Capacity" />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
@@ -162,12 +183,22 @@ const Reports = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="h-64 flex flex-col justify-center items-center">
-                  <PieChart size={48} className="text-blue-500 mb-4" />
-                  <h3 className="text-xl font-semibold">Department Distribution</h3>
-                  <p className="text-gray-500 mb-4 max-w-md text-center">
-                    This area would display a pie chart showing the distribution of production across departments.
-                  </p>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ReChartsPie>
+                      <Pie
+                        data={departmentData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        fill="#8884d8"
+                        label
+                      />
+                      <Tooltip />
+                    </ReChartsPie>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
@@ -186,45 +217,108 @@ const Reports = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="h-80 flex flex-col justify-center items-center">
-                <LineChart size={48} className="text-green-500 mb-4" />
-                <h3 className="text-xl font-semibold">Production Trends</h3>
-                <p className="text-gray-500 mb-4 max-w-md text-center">
-                  This area would display a line chart showing production metrics over time.
-                </p>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ReChartsLine data={productionMetrics}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis yAxisId="left" />
+                    <YAxis yAxisId="right" orientation="right" />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="efficiency"
+                      stroke="#8884d8"
+                      name="Efficiency %"
+                    />
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="defectRate"
+                      stroke="#82ca9d"
+                      name="Defect Rate %"
+                    />
+                  </ReChartsLine>
+                </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="inventory" className="mt-0">
-          <div className="flex flex-col justify-center items-center py-12">
-            <PieChart size={48} className="text-purple-500 mb-4" />
-            <h3 className="text-xl font-semibold">Inventory Reports</h3>
-            <p className="text-gray-500 mb-4 max-w-md text-center">
-              This tab would display inventory-related reports and analytics.
-            </p>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Inventory Levels</CardTitle>
+              <CardDescription>Current vs Optimal Stock Levels</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-96">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={inventoryData} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="category" type="category" />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="current" fill="#8884d8" name="Current Stock" />
+                    <Bar dataKey="optimal" fill="#82ca9d" name="Optimal Level" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="financial" className="mt-0">
-          <div className="flex flex-col justify-center items-center py-12">
-            <LineChart size={48} className="text-yellow-500 mb-4" />
-            <h3 className="text-xl font-semibold">Financial Reports</h3>
-            <p className="text-gray-500 mb-4 max-w-md text-center">
-              This tab would display financial-related reports and analytics.
-            </p>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Financial Performance</CardTitle>
+              <CardDescription>Revenue, Expenses, and Profit Trends</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-96">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ReChartsLine data={financialData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="revenue" stroke="#8884d8" name="Revenue" />
+                    <Line type="monotone" dataKey="expenses" stroke="#82ca9d" name="Expenses" />
+                    <Line type="monotone" dataKey="profit" stroke="#ffc658" name="Profit" />
+                  </ReChartsLine>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="employee" className="mt-0">
-          <div className="flex flex-col justify-center items-center py-12">
-            <BarChart3 size={48} className="text-cyan-500 mb-4" />
-            <h3 className="text-xl font-semibold">Employee Reports</h3>
-            <p className="text-gray-500 mb-4 max-w-md text-center">
-              This tab would display employee-related reports and analytics.
-            </p>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Employee Performance Metrics</CardTitle>
+              <CardDescription>Department-wise Performance Indicators</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-96">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={employeeData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="department" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="productivity" fill="#8884d8" name="Productivity %" />
+                    <Bar dataKey="attendance" fill="#82ca9d" name="Attendance %" />
+                    <Bar dataKey="training" fill="#ffc658" name="Training %" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
 
