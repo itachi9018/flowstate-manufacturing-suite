@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/Layout";
 import { StatCard } from "@/components/StatCard";
 import { LineChart } from "@/components/LineChart";
@@ -6,8 +5,21 @@ import { TaskList } from "@/components/TaskList";
 import { NotificationList } from "@/components/NotificationList";
 import { StatusCard } from "@/components/StatusCard";
 import { DollarSign, Clock, Users, AlertCircle } from "lucide-react";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const Dashboard = () => {
+  // State for dialog 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   // Sample data for the dashboard
   const revenueData = [
     { name: "Feb 14", value: 12000, previous: 10000 },
@@ -52,6 +64,16 @@ const Dashboard = () => {
       time: "Yesterday at 5:45 PM" 
     },
   ];
+
+  // Formation status details
+  const formationDetails = {
+    company: "FlowState Inc.",
+    status: "In progress",
+    filingDate: "April 19, 2025",
+    estimatedCompletion: "April 25, 2025",
+    documentsPending: ["Certificate of Formation", "Operating Agreement"],
+    nextSteps: "Review and sign operating agreement when ready"
+  };
 
   return (
     <Layout>
@@ -128,6 +150,7 @@ const Dashboard = () => {
             status="In progress"
             progressValue={60}
             description="Estimated processing 4-5 business days"
+            onClick={() => setIsDialogOpen(true)}
           />
           
           <TaskList 
@@ -136,6 +159,63 @@ const Dashboard = () => {
           />
         </div>
       </div>
+
+      {/* Formation Status Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Formation Status</DialogTitle>
+            <DialogDescription>
+              Details about your company formation process
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <h4 className="font-medium">Company</h4>
+              <p className="text-sm text-gray-500">{formationDetails.company}</p>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-medium">Status</h4>
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-amber-500"></div>
+                <p className="text-sm">{formationDetails.status}</p>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-medium">Filing Date</h4>
+              <p className="text-sm text-gray-500">{formationDetails.filingDate}</p>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-medium">Estimated Completion</h4>
+              <p className="text-sm text-gray-500">{formationDetails.estimatedCompletion}</p>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-medium">Documents Pending</h4>
+              <ul className="list-disc pl-5 text-sm text-gray-500">
+                {formationDetails.documentsPending.map((doc, index) => (
+                  <li key={index}>{doc}</li>
+                ))}
+              </ul>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-medium">Next Steps</h4>
+              <p className="text-sm text-gray-500">{formationDetails.nextSteps}</p>
+            </div>
+
+            <div className="space-y-2 pt-2">
+              <Button className="w-full" onClick={() => setIsDialogOpen(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };

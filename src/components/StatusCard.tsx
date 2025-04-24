@@ -10,9 +10,11 @@ interface StatusCardProps {
   progressValue: number;
   description: string;
   className?: string;
+  onClick?: () => void;
+  buttonText?: string;
 }
 
-export function StatusCard({ title, status, progressValue, description, className }: StatusCardProps) {
+export function StatusCard({ title, status, progressValue, description, className, onClick, buttonText = "View status" }: StatusCardProps) {
   return (
     <Card className={cn("glass-dark", className)}>
       <div className="p-6">
@@ -25,8 +27,12 @@ export function StatusCard({ title, status, progressValue, description, classNam
         
         <p className="text-sm text-gray-300 mt-3">{description}</p>
         
-        <Button variant="outline" className="mt-4 w-full bg-white text-flow-dark hover:bg-gray-100">
-          View status
+        <Button 
+          variant="outline" 
+          className="mt-4 w-full bg-white text-flow-dark hover:bg-gray-100"
+          onClick={onClick}
+        >
+          {buttonText}
         </Button>
       </div>
     </Card>
