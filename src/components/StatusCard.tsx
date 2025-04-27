@@ -3,6 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { 
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface StatusCardProps {
   title: string;
@@ -12,9 +20,19 @@ interface StatusCardProps {
   className?: string;
   onClick?: () => void;
   buttonText?: string;
+  detailedInfo?: React.ReactNode;
 }
 
-export function StatusCard({ title, status, progressValue, description, className, onClick, buttonText = "View status" }: StatusCardProps) {
+export function StatusCard({ 
+  title, 
+  status, 
+  progressValue, 
+  description, 
+  className, 
+  onClick, 
+  buttonText = "View status",
+  detailedInfo
+}: StatusCardProps) {
   return (
     <Card className={cn("glass-dark", className)}>
       <div className="p-6">
@@ -27,13 +45,37 @@ export function StatusCard({ title, status, progressValue, description, classNam
         
         <p className="text-sm text-gray-300 mt-3">{description}</p>
         
-        <Button 
-          variant="outline" 
-          className="mt-4 w-full bg-white text-flow-dark hover:bg-gray-100"
-          onClick={onClick}
-        >
-          {buttonText}
-        </Button>
+        {detailedInfo ? (
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="mt-4 w-full bg-white text-flow-dark hover:bg-gray-100"
+              >
+                {buttonText}
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>{title}</SheetTitle>
+                <SheetDescription>
+                  Current status: {status}
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-6">
+                {detailedInfo}
+              </div>
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <Button 
+            variant="outline" 
+            className="mt-4 w-full bg-white text-flow-dark hover:bg-gray-100"
+            onClick={onClick}
+          >
+            {buttonText}
+          </Button>
+        )}
       </div>
     </Card>
   );

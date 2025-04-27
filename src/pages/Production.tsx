@@ -24,6 +24,7 @@ import {
   Filter,
   Search,
   X,
+  View,
 } from "lucide-react";
 
 const Production = () => {
@@ -131,6 +132,119 @@ const Production = () => {
     });
   };
 
+  // Detailed information for each status card
+  const efficiencyDetails = (
+    <div className="space-y-4">
+      <p className="text-sm">Current efficiency is 83% across all production lines, which is 3% above target.</p>
+      <div className="space-y-2">
+        <h4 className="text-sm font-medium">Efficiency by Line:</h4>
+        <ul className="space-y-2">
+          <li className="flex justify-between text-sm">
+            <span>Assembly Line A</span>
+            <span>87%</span>
+          </li>
+          <li className="flex justify-between text-sm">
+            <span>Assembly Line B</span>
+            <span>92%</span>
+          </li>
+          <li className="flex justify-between text-sm">
+            <span>Machining Cell 2</span>
+            <span>78%</span>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 className="text-sm font-medium mb-2">Weekly Trend:</h4>
+        <div className="h-[120px] bg-slate-100 rounded flex items-center justify-center">
+          <p className="text-xs text-slate-500">Efficiency chart would appear here</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const productionLinesDetails = (
+    <div className="space-y-4">
+      <p className="text-sm">4 out of 6 production lines are currently active.</p>
+      <div className="space-y-2">
+        <h4 className="text-sm font-medium">Line Status:</h4>
+        <ul className="space-y-2">
+          {productionLines.map(line => (
+            <li key={line.id} className="flex justify-between text-sm items-center">
+              <span>{line.name}</span>
+              <span className={`px-2 py-0.5 rounded-full text-xs ${
+                line.status === "Running" 
+                  ? "bg-green-100 text-green-800" 
+                  : line.status === "Maintenance"
+                    ? "bg-amber-100 text-amber-800"
+                    : "bg-gray-100 text-gray-800"
+              }`}>{line.status}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+
+  const maintenanceDetails = (
+    <div className="space-y-4">
+      <p className="text-sm">2 machines are currently undergoing scheduled maintenance.</p>
+      <div className="space-y-2">
+        <h4 className="text-sm font-medium">Maintenance Schedule:</h4>
+        <ul className="space-y-2">
+          <li className="text-sm">
+            <div className="flex justify-between">
+              <span>CNC Machine #3</span>
+              <span className="text-amber-600">In Progress</span>
+            </div>
+            <p className="text-xs text-slate-500">Est. completion: Today, 17:30</p>
+          </li>
+          <li className="text-sm">
+            <div className="flex justify-between">
+              <span>Injection Mold #3</span>
+              <span className="text-amber-600">In Progress</span>
+            </div>
+            <p className="text-xs text-slate-500">Est. completion: Tomorrow, 09:00</p>
+          </li>
+          <li className="text-sm">
+            <div className="flex justify-between">
+              <span>Assembly Robot A</span>
+              <span className="text-slate-500">Scheduled</span>
+            </div>
+            <p className="text-xs text-slate-500">Scheduled for: Mar 22</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+
+  const uptimeDetails = (
+    <div className="space-y-4">
+      <p className="text-sm">Average machine uptime is 16.4 hours out of target 24 hours.</p>
+      <div className="space-y-2">
+        <h4 className="text-sm font-medium">Uptime by Machine:</h4>
+        <ul className="space-y-2">
+          {machineStatus.filter(m => m.status === "Running").map(machine => (
+            <li key={machine.id} className="flex justify-between text-sm">
+              <span>{machine.name}</span>
+              <span>{machine.uptime}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <Button 
+        variant="outline" 
+        className="w-full text-xs"
+        onClick={() => toast({
+          title: "Uptime Report",
+          description: "Full uptime report has been generated and sent to your email.",
+          duration: 3000,
+        })}
+      >
+        <View size={14} className="mr-1" /> Generate Full Report
+      </Button>
+    </div>
+  );
+
   return (
     <Layout>
       <div className="flex justify-between items-center mb-6">
@@ -143,28 +257,28 @@ const Production = () => {
           status="83%"
           progressValue={83}
           description="Compared to last week's performance"
-          onClick={() => {/* Optional click handler */}}
+          detailedInfo={efficiencyDetails}
         />
         <StatusCard 
           title="Active Production Lines"
           status="4/6 Running"
           progressValue={66}
           description="Lines currently in operation"
-          onClick={() => {/* Optional click handler */}}
+          detailedInfo={productionLinesDetails}
         />
         <StatusCard 
           title="Machines in Maintenance"
           status="2 Machines"
           progressValue={33}
           description="Undergoing scheduled maintenance"
-          onClick={() => {/* Optional click handler */}}
+          detailedInfo={maintenanceDetails}
         />
         <StatusCard 
           title="Average Machine Uptime"
           status="16.4h"
           progressValue={70}
           description="Average operational time"
-          onClick={() => {/* Optional click handler */}}
+          detailedInfo={uptimeDetails}
         />
       </div>
 
