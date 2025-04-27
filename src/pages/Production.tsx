@@ -1,4 +1,7 @@
-
+import { useState, useEffect } from "react";
+import { Layout } from "@/components/Layout";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { StatusCard } from "@/components/StatusCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart } from "@/components/LineChart";
