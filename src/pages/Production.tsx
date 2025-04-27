@@ -1,8 +1,4 @@
 
-import { useState, useEffect } from "react";
-import { Layout } from "@/components/Layout";
-import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { StatusCard } from "@/components/StatusCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart } from "@/components/LineChart";
@@ -139,26 +135,33 @@ const Production = () => {
       </div>
 
       <div className="grid grid-cols-4 gap-6 mb-6">
-        <StatCard 
+        <StatusCard 
           title="Production Efficiency"
-          value="83%"
-          trend={{ value: 5, isPositive: true }}
-          icon={<Gauge className="text-flow-blue" size={24} />}
+          status="83%"
+          progressValue={83}
+          description="Compared to last week's performance"
+          onClick={() => {/* Optional click handler */}}
         />
-        <StatCard 
+        <StatusCard 
           title="Active Production Lines"
-          value="4/6"
-          icon={<FactoryIcon className="text-green-500" size={24} />}
+          status="4/6 Running"
+          progressValue={66}
+          description="Lines currently in operation"
+          onClick={() => {/* Optional click handler */}}
         />
-        <StatCard 
+        <StatusCard 
           title="Machines in Maintenance"
-          value="2"
-          icon={<AlertCircle className="text-amber-500" size={24} />}
+          status="2 Machines"
+          progressValue={33}
+          description="Undergoing scheduled maintenance"
+          onClick={() => {/* Optional click handler */}}
         />
-        <StatCard 
+        <StatusCard 
           title="Average Machine Uptime"
-          value="16.4h"
-          icon={<Clock className="text-flow-purple" size={24} />}
+          status="16.4h"
+          progressValue={70}
+          description="Average operational time"
+          onClick={() => {/* Optional click handler */}}
         />
       </div>
 
