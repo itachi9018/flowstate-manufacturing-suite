@@ -1,14 +1,44 @@
 
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { StatCard } from "@/components/StatCard";
+import { StatusCard } from "@/components/StatusCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart } from "@/components/LineChart";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FactoryIcon, Gauge, AlertCircle, Clock, Activity, PlayCircle, StopCircle, CheckCircle } from "lucide-react";
+import {
+  FactoryIcon,
+  Gauge,
+  AlertCircle,
+  Clock,
+  Activity,
+  PlayCircle,
+  StopCircle,
+  CheckCircle,
+  Filter,
+  Search,
+  X,
+} from "lucide-react";
 
 const Production = () => {
+  const { toast } = useToast();
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  // Filter states
+  const [filters, setFilters] = useState({
+    status: "all",
+    minEfficiency: "",
+    maxEfficiency: "",
+  });
+  
   // Sample data for production efficiency chart
   const efficiencyData = [
     { name: "Mar 1", efficiency: 78, target: 80 },
@@ -37,6 +67,70 @@ const Production = () => {
     { id: "M004", name: "Assembly Robot A", status: "Running", uptime: "22h 10m", efficiency: 95, nextMaintenance: "Mar 22" },
     { id: "M005", name: "Assembly Robot B", status: "Warning", uptime: "8h 15m", efficiency: 72, nextMaintenance: "Mar 14" },
   ];
+  
+  // Filtered machine status based on search term and filters
+  const [filteredMachines, setFilteredMachines] = useState(machineStatus);
+  
+  // Apply filters and search
+  useEffect(() => {
+    let filtered = [...machineStatus];
+    
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(machine => 
+        machine.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        machine.id.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    // Apply status filter
+    if (filters.status !== "all") {
+      filtered = filtered.filter(machine => machine.status === filters.status);
+    }
+    
+    // Apply efficiency filters
+    if (filters.minEfficiency) {
+      filtered = filtered.filter(machine => machine.efficiency >= Number(filters.minEfficiency));
+    }
+    
+    if (filters.maxEfficiency) {
+      filtered = filtered.filter(machine => machine.efficiency <= Number(filters.maxEfficiency));
+    }
+    
+    setFilteredMachines(filtered);
+  }, [machineStatus, searchTerm, filters]);
+  
+  // Handle filter changes
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFilters({
+      ...filters,
+      [name]: value
+    });
+  };
+
+  // Handle filter select changes
+  const handleFilterSelectChange = (name: string, value: string) => {
+    setFilters({
+      ...filters,
+      [name]: value
+    });
+  };
+
+  // Reset filters
+  const resetFilters = () => {
+    setFilters({
+      status: "all",
+      minEfficiency: "",
+      maxEfficiency: ""
+    });
+    setIsFilterDialogOpen(false);
+    toast({
+      title: "Filters Reset",
+      description: "All filters have been cleared.",
+      duration: 3000,
+    });
+  };
 
   return (
     <Layout>
@@ -136,6 +230,28 @@ const Production = () => {
           </div>
           
           <TabsContent value="machine-status" className="p-6 m-0">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-semibold">Machine Status Overview</h3>
+              <div className="flex gap-2 items-center">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input 
+                    placeholder="Search machines..." 
+                    className="pl-10 w-64" 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={() => setIsFilterDialogOpen(true)}
+                >
+                  <Filter size={16} />
+                </Button>
+              </div>
+            </div>
+            
             <Table>
               <TableHeader>
                 <TableRow>
@@ -148,40 +264,48 @@ const Production = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {machineStatus.map((machine) => (
-                  <TableRow key={machine.id}>
-                    <TableCell className="font-mono text-xs">{machine.id}</TableCell>
-                    <TableCell className="font-medium">{machine.name}</TableCell>
-                    <TableCell>
-                      <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        machine.status === "Running" 
-                          ? "bg-green-100 text-green-800" 
-                          : machine.status === "Maintenance"
-                            ? "bg-amber-100 text-amber-800"
-                            : machine.status === "Warning"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-gray-100 text-gray-800"
-                      }`}>
-                        {machine.status === "Running" && <PlayCircle size={12} className="mr-1" />}
-                        {machine.status === "Maintenance" && <AlertCircle size={12} className="mr-1" />}
-                        {machine.status === "Warning" && <AlertCircle size={12} className="mr-1" />}
-                        {machine.status === "Idle" && <StopCircle size={12} className="mr-1" />}
-                        {machine.status}
-                      </div>
+                {filteredMachines.length > 0 ? (
+                  filteredMachines.map((machine) => (
+                    <TableRow key={machine.id}>
+                      <TableCell className="font-mono text-xs">{machine.id}</TableCell>
+                      <TableCell className="font-medium">{machine.name}</TableCell>
+                      <TableCell>
+                        <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          machine.status === "Running" 
+                            ? "bg-green-100 text-green-800" 
+                            : machine.status === "Maintenance"
+                              ? "bg-amber-100 text-amber-800"
+                              : machine.status === "Warning"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-gray-100 text-gray-800"
+                        }`}>
+                          {machine.status === "Running" && <PlayCircle size={12} className="mr-1" />}
+                          {machine.status === "Maintenance" && <AlertCircle size={12} className="mr-1" />}
+                          {machine.status === "Warning" && <AlertCircle size={12} className="mr-1" />}
+                          {machine.status === "Idle" && <StopCircle size={12} className="mr-1" />}
+                          {machine.status}
+                        </div>
+                      </TableCell>
+                      <TableCell>{machine.uptime}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Progress 
+                            value={machine.efficiency} 
+                            className="w-20 h-2" 
+                          />
+                          <span className="text-sm">{machine.efficiency}%</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>{machine.nextMaintenance}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-10 text-gray-500">
+                      No machine data found matching your criteria.
                     </TableCell>
-                    <TableCell>{machine.uptime}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Progress 
-                          value={machine.efficiency} 
-                          className="w-20 h-2" 
-                        />
-                        <span className="text-sm">{machine.efficiency}%</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>{machine.nextMaintenance}</TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </TabsContent>
@@ -199,6 +323,87 @@ const Production = () => {
           </TabsContent>
         </Tabs>
       </Card>
+      
+      {/* Filter Dialog */}
+      <Dialog open={isFilterDialogOpen} onOpenChange={setIsFilterDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Filter Machines</DialogTitle>
+            <DialogDescription>
+              Set filters to narrow down your machine view.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="filter-status" className="text-right">
+                Status
+              </Label>
+              <Select 
+                value={filters.status} 
+                onValueChange={(value) => handleFilterSelectChange("status", value)}
+              >
+                <SelectTrigger className="col-span-3" id="filter-status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="Running">Running</SelectItem>
+                  <SelectItem value="Maintenance">Maintenance</SelectItem>
+                  <SelectItem value="Warning">Warning</SelectItem>
+                  <SelectItem value="Idle">Idle</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="min-efficiency" className="text-right">
+                Min Efficiency
+              </Label>
+              <Input
+                id="min-efficiency"
+                name="minEfficiency"
+                type="number"
+                value={filters.minEfficiency}
+                onChange={handleFilterChange}
+                className="col-span-3"
+                min={0}
+                max={100}
+                placeholder="Minimum efficiency"
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="max-efficiency" className="text-right">
+                Max Efficiency
+              </Label>
+              <Input
+                id="max-efficiency"
+                name="maxEfficiency"
+                type="number"
+                value={filters.maxEfficiency}
+                onChange={handleFilterChange}
+                className="col-span-3"
+                min={0}
+                max={100}
+                placeholder="Maximum efficiency"
+              />
+            </div>
+          </div>
+          
+          <DialogFooter className="flex justify-between items-center">
+            <Button variant="outline" type="button" onClick={resetFilters}>
+              <X size={16} className="mr-2" /> Reset Filters
+            </Button>
+            
+            <DialogClose asChild>
+              <Button onClick={() => setIsFilterDialogOpen(false)}>
+                <CheckCircle size={16} className="mr-2" /> Apply Filters
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
