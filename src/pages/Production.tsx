@@ -155,8 +155,18 @@ const Production = () => {
       </div>
       <div>
         <h4 className="text-sm font-medium mb-2">Weekly Trend:</h4>
-        <div className="h-[120px] bg-slate-100 rounded flex items-center justify-center">
-          <p className="text-xs text-slate-500">Efficiency chart would appear here</p>
+        <div className="h-[180px]">
+          <LineChart 
+            data={efficiencyData}
+            title=""
+            dataKey="efficiency"
+            color="#33C3F0"
+            comparison={{
+              label: "Target",
+              dataKey: "target",
+              color: "#D6BCFA"
+            }}
+          />
         </div>
       </div>
     </div>
