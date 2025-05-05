@@ -9,7 +9,6 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  base: "/flowstate-manufacturing-suite",
   plugins: [
     react(),
     mode === 'development' &&
