@@ -26,14 +26,14 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/production" element={<Production />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/employees" element={<Employees />} />
-            <Route path="/finance" element={<Finance />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/flowstate-manufacturing-suite/" element={<Dashboard />} />
+            <Route path="/flowstate-manufacturing-suite/inventory" element={<Inventory />} />
+            <Route path="/flowstate-manufacturing-suite/production" element={<Production />} />
+            <Route path="/flowstate-manufacturing-suite/orders" element={<Orders />} />
+            <Route path="/flowstate-manufacturing-suite/employees" element={<Employees />} />
+            <Route path="/flowstate-manufacturing-suite/finance" element={<Finance />} />
+            <Route path="/flowstate-manufacturing-suite/reports" element={<Reports />} />
+            <Route path="/flowstate-manufacturing-suite/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

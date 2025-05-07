@@ -44,49 +44,49 @@ export function Sidebar({ className }: SidebarProps) {
 
         <nav className="flex-1 pt-4">
           <NavItem
-            to="/"
+            to="/flowstate-manufacturing-suite/"
             icon={<LayoutDashboard size={20} />}
             label="Dashboard"
             collapsed={collapsed}
           />
           <NavItem
-            to="/inventory"
+            to="/flowstate-manufacturing-suite/inventory"
             icon={<Box size={20} />}
             label="Inventory"
             collapsed={collapsed}
           />
           <NavItem
-            to="/production"
+            to="/flowstate-manufacturing-suite/production"
             icon={<FactoryIcon size={20} />}
             label="Production"
             collapsed={collapsed}
           />
           <NavItem
-            to="/orders"
+            to="/flowstate-manufacturing-suite/orders"
             icon={<ShoppingCart size={20} />}
             label="Orders"
             collapsed={collapsed}
           />
           <NavItem
-            to="/employees"
+            to="/flowstate-manufacturing-suite/employees"
             icon={<Users size={20} />}
             label="Employees"
             collapsed={collapsed}
           />
           <NavItem
-            to="/finance"
+            to="/flowstate-manufacturing-suite/finance"
             icon={<CreditCard size={20} />}
             label="Finance"
             collapsed={collapsed}
           />
           <NavItem
-            to="/reports"
+            to="/flowstate-manufacturing-suite/reports"
             icon={<BarChart3 size={20} />}
             label="Reports"
             collapsed={collapsed}
           />
           <NavItem
-            to="/settings"
+            to="/flowstate-manufacturing-suite/settings"
             icon={<Settings size={20} />}
             label="Settings"
             collapsed={collapsed}

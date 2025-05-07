@@ -18,3 +18,8 @@ Dashboard
 - Budget - Adjust budget button not working.
   Reports
   Settings
+
+Can I store data temporary like in-memory like array data structures.
+Use case :
+User Add info about orders(n Orders Page) which gets stored in Array. And Use this array to to show graph in Dashboard(Dashboard Page)
+Note : Orders page and Dashboard Page are different Page/tabs.
