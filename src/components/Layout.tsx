@@ -2,6 +2,7 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { cn } from "@/lib/utils";
+import { ChatbotDialog } from "@/components/ChatbotDialog";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ export function Layout({ children, className }: LayoutProps) {
           {children}
         </main>
       </div>
+      <ChatbotDialog />
     </div>
   );
 }

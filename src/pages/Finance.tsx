@@ -12,8 +12,7 @@ import {
   FileText,
   Calendar,
   ChevronDown,
-  CircleDollarSign,
-  Wallet
+  CircleDollarSign
 } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { CashFlowChart } from "@/components/CashFlowChart";
 
 // Mock financial data
 const transactions = [
@@ -186,21 +186,7 @@ const Finance = () => {
         {/* Overview Tab */}
         <TabsContent value="overview">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="glass-card col-span-1 lg:col-span-2">
-              <CardHeader>
-                <CardTitle>Cash Flow</CardTitle>
-                <CardDescription>Monthly revenue vs expenses</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-80 flex flex-col justify-center items-center">
-                  <Wallet size={48} className="text-flow-blue mb-4" />
-                  <h3 className="text-xl font-semibold">Cash Flow Chart</h3>
-                  <p className="text-gray-500 mb-4 max-w-md text-center">
-                    This area would display a time-series chart showing revenue and expenses over time.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <CashFlowChart />
             
             <Card className="glass-card">
               <CardHeader>
